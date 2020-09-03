@@ -163,7 +163,7 @@
 
             if($QueryResults)
             {
-                return(True);
+                return true;
             }
             else
             {
