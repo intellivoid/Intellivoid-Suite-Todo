@@ -199,7 +199,7 @@
                 }
             }
 
-            $Query = QueryBuilder::update("tasks", array(
+            $Query = QueryBuilder::select("tasks", array(
                 "group_id" => (int)$task->GroupID,
                 "title" => $this->todo->getDatabase()->real_escape_string($task->Title),
                 "description" => $this->todo->getDatabase()->real_escape_string($task->Description),
@@ -220,5 +220,55 @@
             {
                 throw new DatabaseException($Query, $this->todo->getDatabase()->error);
             }
+        }
+
+        /**
+         * Returns all tasks associated with a Account ID
+         *
+         * @param int $account_id
+         * @return Task[]
+         * @throws DatabaseException
+         * @noinspection PhpUnused
+         */
+        public function getTasks(int $account_id): array
+        {
+            $Results = array();
+            $Query = QueryBuilder::select("tasks", array(
+                "id",
+                "public_id",
+                "account_id",
+                "group_id",
+                "title",
+                "description",
+                "labels",
+                "color",
+                "is_completed",
+                "is_deleted",
+                "properties",
+                "last_updated_timestamp",
+                "created_timestamp"
+            ), "account_id", (int)$account_id . "\' AND `is_deleted`=\'0");
+            $QueryResults = $this->todo->getDatabase()->query($Query);
+
+            if($QueryResults)
+            {
+                if($QueryResults->num_rows == 0)
+                {
+                    return $Results;
+                }
+
+                while($row = $QueryResults->fetch_assoc())
+                {
+                    $row["labels"] = ZiProto::decode($row["labels"]);
+                    $row["properties"] = ZiProto::decode($row["properties"]);
+                    $Results[] = Task::fromArray($row);
+                }
+            }
+            else
+            {
+                throw new DatabaseException($Query, $this->todo->getDatabase()->error);
+            }
+
+            return $Results;
         }
     }
