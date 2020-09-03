@@ -1,0 +1,49 @@
+{
+    "package": {
+        "package_name": "net.intellivoid.todo",
+        "name": "Intellivoid Accounts ToDo Library",
+        "version": "1.0.0.0",
+        "author": "Zi Xing Narrakas",
+        "organization": "Intellivoid",
+        "description": "Manages ToDo Tasks and groups for Intellivoid Accounts",
+        "url": "https://github.com/intellivoid/todo",
+        "dependencies": [],
+        "configuration": {
+            "autoload_method": "generted_spl",
+            "main": null,
+            "post_installation": [],
+            "pre_installation": []
+        }
+    },
+    "components": [
+        {
+            "required": true,
+            "file": "Abstracts/Color.php"
+        },
+        {
+            "required": true,
+            "file": "Managers/GroupManager.php"
+        },
+        {
+            "required": true,
+            "file": "Managers/TasksManager.php"
+        },
+        {
+            "required": true,
+            "file": "Objects/Group.php"
+        },
+        {
+            "required": true,
+            "file": "Objects/Task/Properties.php"
+        },
+        {
+            "required": true,
+            "file": "Objects/Task.php"
+        },
+        {
+            "required": true,
+            "file": "Todo.php"
+        }
+    ],
+    "files": []
+}
