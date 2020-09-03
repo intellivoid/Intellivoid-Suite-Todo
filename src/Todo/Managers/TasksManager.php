@@ -6,9 +6,12 @@
 
     use msqg\QueryBuilder;
     use Todo\Abstracts\Color;
+    use Todo\Abstracts\SearchMethods\TaskSearchMethod;
     use Todo\Exceptions\DatabaseException;
+    use Todo\Exceptions\InvalidSearchMethodException;
     use Todo\Exceptions\InvalidTaskDescriptionException;
     use Todo\Exceptions\InvalidTaskTitleException;
+    use Todo\Exceptions\TaskNotFoundException;
     use Todo\Objects\Task;
     use Todo\Todo;
     use Todo\Utilities\Hashing;
@@ -45,8 +48,10 @@
          * @param int|null $group_id
          * @return Task
          * @throws DatabaseException
+         * @throws InvalidSearchMethodException
          * @throws InvalidTaskDescriptionException
          * @throws InvalidTaskTitleException
+         * @throws TaskNotFoundException
          * @noinspection PhpUnused
          */
         public function createTask(int $account_id, string $title, string $description, array $labels=[], int $group_id=null): Task
@@ -88,12 +93,79 @@
             $QueryResults = $this->todo->getDatabase()->query($Query);
             if($QueryResults)
             {
-                // TODO: Add the ability to return the task
-                return null;
+                return self::getTask(TaskSearchMethod::byPublicId, $public_id);
             }
             else
             {
                 throw new DatabaseException($Query, $this->todo->getDatabase()->error);
             }
+        }
+
+        /**
+         * Gets an existing task from the database
+         *
+         * @param string $search_method
+         * @param string $value
+         * @return Task
+         * @throws DatabaseException
+         * @throws InvalidSearchMethodException
+         * @throws TaskNotFoundException
+         * @noinspection PhpUnused
+         */
+        public function getTask(string $search_method, string $value): Task
+        {
+            switch($search_method)
+            {
+                case TaskSearchMethod::byPublicId:
+                    $search_method = $this->todo->getDatabase()->real_escape_string($search_method);
+                    $value = $this->todo->getDatabase()->real_escape_string($value);
+                    break;
+
+                case TaskSearchMethod::byId:
+                    $search_method = $this->todo->getDatabase()->real_escape_string($search_method);
+                    $value = (int)$value;
+                    break;
+
+                default:
+                    throw new InvalidSearchMethodException("The search method '" . $search_method . "' is inapplicable to this method");
+            }
+
+            $Query = QueryBuilder::select("tasks", array(
+                "id",
+                "public_id",
+                "account_id",
+                "group_id",
+                "title",
+                "description",
+                "labels",
+                "color",
+                "is_completed",
+                "is_deleted",
+                "properties",
+                "last_updated_timestamp",
+                "created_timestamp"
+            ), $search_method, $value);
+            $QueryResults = $this->todo->getDatabase()->query($Query);
+
+            if($QueryResults)
+            {
+                $Row = $QueryResults->fetch_array(MYSQLI_ASSOC);
+
+                if ($Row == False)
+                {
+                    throw new TaskNotFoundException();
+                }
+                else
+                {
+                    $Row["labels"] = ZiProto::decode($Row["labels"]);
+                    $Row["properties"] = ZiProto::decode($Row["properties"]);
+                    return(Task::fromArray($Row));
+                }
+            }
+            else
+            {
+                throw new DatabaseException($Query, $this->todo->getDatabase()->error);
+            }
+
         }
     }

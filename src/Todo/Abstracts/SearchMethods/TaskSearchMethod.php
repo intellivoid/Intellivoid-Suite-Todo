@@ -1,10 +1,15 @@
 <?php
 
 
-namespace Todo\Abstracts\SearchMethods;
+    namespace Todo\Abstracts\SearchMethods;
 
+    /**
+     * Class TaskSearchMethod
+     * @package Todo\Abstracts\SearchMethods
+     */
+    abstract class TaskSearchMethod
+    {
+        const byId = "id";
 
-class TaskSearchMethod
-{
-
-}
+        const byPublicId = "public_id";
+    }
