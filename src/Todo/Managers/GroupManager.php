@@ -191,7 +191,7 @@
                 "is_deleted",
                 "last_updated_timestamp",
                 "created_timestamp"
-            ), "account_id", (int)$account_id);
+            ), "account_id", (int)$account_id . "\' AND `is_deleted`=\'0");
             $QueryResults = $this->todo->getDatabase()->query($Query);
 
             if($QueryResults)
@@ -203,10 +203,7 @@
 
                 while($row = $QueryResults->fetch_assoc())
                 {
-                    if((bool)$row["is_deleted"] == false)
-                    {
-                        $Results[] = Group::fromArray($row);
-                    }
+                    $Results[] = Group::fromArray($row);
                 }
             }
             else
