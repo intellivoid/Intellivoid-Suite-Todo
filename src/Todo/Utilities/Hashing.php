@@ -33,7 +33,7 @@
         }
 
         /**
-         * Generates a Group ID Public ID
+         * Generates a Group Public ID
          *
          * @param int $account_id
          * @param string $title
@@ -45,4 +45,31 @@
             return hash("sha256",
                 self::pepper($account_id . $created_timestamp) . $title . $created_timestamp . $account_id);
         }
+
+        /**
+         * Generates a Task Public ID
+         *
+         * @param int $account_id
+         * @param string $title
+         * @param string|null $description
+         * @param int $created_timestamp
+         * @return string
+         * @noinspection PhpUnused
+         */
+        public static function taskPublicId(int $account_id, string $title, string $description, int $created_timestamp): string
+        {
+            if($description == null)
+            {
+                return hash("sha256",
+                    self::pepper($account_id . $created_timestamp) . $title . $created_timestamp . $account_id
+                );
+            }
+            else
+            {
+                return hash("sha256",
+                    self::pepper($account_id . $created_timestamp . $description) . $title . $created_timestamp . $account_id . $description
+                );
+            }
+        }
+
     }

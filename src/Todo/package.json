@@ -17,6 +17,11 @@
                 "package": "net.intellivoid.msqg",
                 "version": "latest",
                 "required": true
+            },
+            {
+                "package": "net.intellivoid.ziproto",
+                "version": "latest",
+                "required": true
             }
         ],
         "configuration": {
