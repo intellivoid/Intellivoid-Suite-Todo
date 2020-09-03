@@ -38,7 +38,47 @@
         },
         {
             "required": true,
+            "file": "Abstracts/SearchMethods/GroupSearchMethod.php"
+        },
+        {
+            "required": true,
+            "file": "Abstracts/SearchMethods/TaskSearchMethod.php"
+        },
+        {
+            "required": true,
             "file": "AutoConfig.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/DatabaseException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/GroupNotFoundException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/InvalidColorException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/InvalidGroupTitleException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/InvalidSearchMethodException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/InvalidTaskDescriptionException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/InvalidTaskTitleException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/TaskNotFoundException.php"
         },
         {
             "required": true,
@@ -63,6 +103,14 @@
         {
             "required": true,
             "file": "Todo.php"
+        },
+        {
+            "required": true,
+            "file": "Utilities/Hashing.php"
+        },
+        {
+            "required": true,
+            "file": "Utilities/Validation.php"
         }
     ],
     "files": [
