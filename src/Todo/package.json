@@ -9,7 +9,7 @@
         "url": "https://github.com/intellivoid/todo",
         "dependencies": [],
         "configuration": {
-            "autoload_method": "generted_spl",
+            "autoload_method": "generated_spl",
             "main": null,
             "post_installation": [],
             "pre_installation": []
@@ -19,6 +19,10 @@
         {
             "required": true,
             "file": "Abstracts/Color.php"
+        },
+        {
+            "required": true,
+            "file": "AutoConfig.php"
         },
         {
             "required": true,
@@ -45,5 +49,8 @@
             "file": "Todo.php"
         }
     ],
-    "files": []
+    "files": [
+        "configuration.ini",
+        "package.json"
+    ]
 }
