@@ -9,6 +9,7 @@
     use Todo\Abstracts\SearchMethods\GroupSearchMethod;
     use Todo\Exceptions\DatabaseException;
     use Todo\Exceptions\GroupNotFoundException;
+    use Todo\Exceptions\InvalidColorException;
     use Todo\Exceptions\InvalidGroupTitleException;
     use Todo\Exceptions\InvalidSearchMethodException;
     use Todo\Objects\Group;
@@ -68,7 +69,6 @@
             $QueryResults = $this->todo->getDatabase()->query($Query);
             if($QueryResults)
             {
-                // TODO: Return the group object from the database
                 return self::getGroup(GroupSearchMethod::byPublicId, $PublicID);
             }
             else
@@ -130,6 +130,40 @@
                 {
                     return(Group::fromArray($Row));
                 }
+            }
+            else
+            {
+                throw new DatabaseException($Query, $this->todo->getDatabase()->error);
+            }
+        }
+
+        /**
+         * Updates an existing group object in the database
+         *
+         * @param Group $group
+         * @return bool
+         * @throws DatabaseException
+         * @throws GroupNotFoundException
+         * @throws InvalidSearchMethodException
+         * @throws InvalidColorException
+         * @noinspection PhpUnused
+         */
+        public function updateGroup(Group $group): bool
+        {
+            Validation::color($group->Color, true);
+            $this->getGroup(GroupSearchMethod::byId, $group->ID);
+
+            $Query = QueryBuilder::update("groups", array(
+                "title" => $this->todo->getDatabase()->real_escape_string($group->Title),
+                "color" => (int)$group->Color,
+                "is_deleted" => (int)$group->IsDeleted,
+                "last_updated_timestamp" => (int)time()
+            ), GroupSearchMethod::byId, $group->ID);
+            $QueryResults = $this->todo->getDatabase()->query($Query);
+
+            if($QueryResults)
+            {
+                return(True);
             }
             else
             {

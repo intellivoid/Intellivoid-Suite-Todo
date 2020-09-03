@@ -3,6 +3,8 @@
 
     namespace Todo\Utilities;
 
+    use Todo\Abstracts\Color;
+    use Todo\Exceptions\InvalidColorException;
     use Todo\Exceptions\InvalidGroupTitleException;
 
     /**
@@ -52,5 +54,45 @@
             }
 
             return true;
+        }
+
+        /**
+         * Validates the input
+         *
+         * @param $input
+         * @param bool $throw_exception
+         * @return bool
+         * @throws InvalidColorException
+         */
+        public static function color($input, bool $throw_exception=false): bool
+        {
+            if($input == null)
+            {
+                if($throw_exception)
+                {
+                    throw new InvalidColorException("The input cannot be null");
+                }
+
+                return false;
+            }
+
+            switch((int)$input)
+            {
+                case Color::None:
+                case Color::Red:
+                case Color::Blue:
+                case Color::Yellow:
+                case Color::Green:
+                case Color::Pink:
+                    return true;
+
+                default:
+                    if($throw_exception)
+                    {
+                        throw new InvalidColorException("The color option is invalid");
+                    }
+
+                    return false;
+            }
         }
     }
