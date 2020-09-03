@@ -6,8 +6,11 @@
 
     use msqg\QueryBuilder;
     use Todo\Abstracts\Color;
+    use Todo\Abstracts\SearchMethods\GroupSearchMethod;
     use Todo\Exceptions\DatabaseException;
+    use Todo\Exceptions\GroupNotFoundException;
     use Todo\Exceptions\InvalidGroupTitleException;
+    use Todo\Exceptions\InvalidSearchMethodException;
     use Todo\Objects\Group;
     use Todo\Todo;
     use Todo\Utilities\Hashing;
@@ -39,8 +42,11 @@
          * @param int $account_id
          * @param string $title
          * @return Group
-         * @throws InvalidGroupTitleException
          * @throws DatabaseException
+         * @throws GroupNotFoundException
+         * @throws InvalidGroupTitleException
+         * @throws InvalidSearchMethodException
+         * @noinspection PhpUnused
          */
         public function createGroup(int $account_id, string $title): Group
         {
@@ -63,7 +69,67 @@
             if($QueryResults)
             {
                 // TODO: Return the group object from the database
-                return null;
+                return self::getGroup(GroupSearchMethod::byPublicId, $PublicID);
+            }
+            else
+            {
+                throw new DatabaseException($Query, $this->todo->getDatabase()->error);
+            }
+        }
+
+        /**
+         * Finds a group object from the database
+         *
+         * @param string|GroupSearchMethod $search_method
+         * @param string $value
+         * @return Group
+         * @throws DatabaseException
+         * @throws GroupNotFoundException
+         * @throws InvalidSearchMethodException
+         * @noinspection PhpUnused
+         */
+        public function getGroup(string $search_method, string $value): Group
+        {
+            switch($search_method)
+            {
+                case GroupSearchMethod::byPublicId:
+                    $search_method = $this->todo->getDatabase()->real_escape_string($search_method);
+                    $value = $this->todo->getDatabase()->real_escape_string($value);
+                    break;
+
+                case GroupSearchMethod::byId:
+                    $search_method = $this->todo->getDatabase()->real_escape_string($search_method);
+                    $value = (int)$value;
+                    break;
+
+                default:
+                    throw new InvalidSearchMethodException("The search method '" . $search_method . "' is inapplicable to this method");
+            }
+
+            $Query = QueryBuilder::select("groups", array(
+                "id",
+                "public_id",
+                "account_id",
+                "title",
+                "color",
+                "is_deleted",
+                "last_updated_timestamp",
+                "created_timestamp"
+            ), $search_method, $value);
+            $QueryResults = $this->todo->getDatabase()->query($Query);
+
+            if($QueryResults)
+            {
+                $Row = $QueryResults->fetch_array(MYSQLI_ASSOC);
+
+                if ($Row == False)
+                {
+                    throw new GroupNotFoundException();
+                }
+                else
+                {
+                    return(Group::fromArray($Row));
+                }
             }
             else
             {
