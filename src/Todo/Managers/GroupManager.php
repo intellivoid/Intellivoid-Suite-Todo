@@ -146,11 +146,13 @@
          * @throws GroupNotFoundException
          * @throws InvalidSearchMethodException
          * @throws InvalidColorException
+         * @throws InvalidGroupTitleException
          * @noinspection PhpUnused
          */
         public function updateGroup(Group $group): bool
         {
             Validation::color($group->Color, true);
+            Validation::groupTitle($group->Title, true);
             $this->getGroup(GroupSearchMethod::byId, $group->ID);
 
             $Query = QueryBuilder::update("groups", array(

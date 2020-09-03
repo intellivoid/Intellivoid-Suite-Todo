@@ -8,6 +8,7 @@
     use Todo\Abstracts\Color;
     use Todo\Abstracts\SearchMethods\TaskSearchMethod;
     use Todo\Exceptions\DatabaseException;
+    use Todo\Exceptions\InvalidColorException;
     use Todo\Exceptions\InvalidSearchMethodException;
     use Todo\Exceptions\InvalidTaskDescriptionException;
     use Todo\Exceptions\InvalidTaskTitleException;
@@ -56,8 +57,8 @@
          */
         public function createTask(int $account_id, string $title, string $description, array $labels=[], int $group_id=null): Task
         {
-            Validation::taskTitle($title);
-            Validation::taskDescription($description);
+            Validation::taskTitle($title, true);
+            Validation::taskDescription($description, true);
 
             $validated_labels = [];
             foreach($labels as $label)
@@ -166,6 +167,58 @@
             {
                 throw new DatabaseException($Query, $this->todo->getDatabase()->error);
             }
+        }
 
+        /**
+         * Updates an existing task object from the database
+         *
+         * @param Task $task
+         * @return bool
+         * @throws DatabaseException
+         * @throws InvalidSearchMethodException
+         * @throws InvalidTaskDescriptionException
+         * @throws InvalidTaskTitleException
+         * @throws TaskNotFoundException
+         * @throws InvalidColorException
+         * @noinspection PhpUnused
+         */
+        public function updateTask(Task $task): bool
+        {
+            self::getTask(TaskSearchMethod::byId, $task->ID);
+
+            Validation::taskTitle($task->Title, true);
+            Validation::taskDescription($task->Description, true);
+            Validation::color($task->Color, true);
+
+            $validated_labels = [];
+            foreach($task->Labels as $label)
+            {
+                if(Validation::label($label, false))
+                {
+                    $validated_labels[] = $label;
+                }
+            }
+
+            $Query = QueryBuilder::update("tasks", array(
+                "group_id" => (int)$task->GroupID,
+                "title" => $this->todo->getDatabase()->real_escape_string($task->Title),
+                "description" => $this->todo->getDatabase()->real_escape_string($task->Description),
+                "labels" => $this->todo->getDatabase()->real_escape_string(ZiProto::encode($validated_labels)),
+                "color" => (int)$task->Color,
+                "is_completed" => (int)$task->IsCompleted,
+                "is_deleted" => (int)$task->IsDeleted,
+                "properties" => $this->todo->getDatabase()->real_escape_string(ZiProto::encode($task->Properties->toArray())),
+                "last_updated_timestamp" => (int)time()
+            ), TaskSearchMethod::byId, (int)$task->ID);
+            $QueryResults = $this->todo->getDatabase()->query($Query);
+
+            if($QueryResults)
+            {
+                return true;
+            }
+            else
+            {
+                throw new DatabaseException($Query, $this->todo->getDatabase()->error);
+            }
         }
     }
