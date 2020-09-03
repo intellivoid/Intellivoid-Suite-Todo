@@ -7,7 +7,18 @@
         "organization": "Intellivoid",
         "description": "Manages ToDo Tasks and groups for Intellivoid Accounts",
         "url": "https://github.com/intellivoid/todo",
-        "dependencies": [],
+        "dependencies": [
+            {
+                "package": "net.intellivoid.acm",
+                "version": "latest",
+                "required": true
+            },
+            {
+                "package": "net.intellivoid.msqg",
+                "version": "latest",
+                "required": true
+            }
+        ],
         "configuration": {
             "autoload_method": "generated_spl",
             "main": null,
