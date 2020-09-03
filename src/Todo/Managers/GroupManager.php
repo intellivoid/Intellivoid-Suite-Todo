@@ -177,6 +177,7 @@
          * @param int $account_id
          * @return Group[]
          * @throws DatabaseException
+         * @noinspection PhpUnused
          */
         public function getGroups(int $account_id): array
         {
