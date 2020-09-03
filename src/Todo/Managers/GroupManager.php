@@ -170,4 +170,49 @@
                 throw new DatabaseException($Query, $this->todo->getDatabase()->error);
             }
         }
+
+        /**
+         * Lists all the groups created by an account
+         *
+         * @param int $account_id
+         * @return Group[]
+         * @throws DatabaseException
+         */
+        public function getGroups(int $account_id): array
+        {
+            $Results = array();
+            $Query = QueryBuilder::select("groups", array(
+                "id",
+                "public_id",
+                "account_id",
+                "title",
+                "color",
+                "is_deleted",
+                "last_updated_timestamp",
+                "created_timestamp"
+            ), "account_id", (int)$account_id);
+            $QueryResults = $this->todo->getDatabase()->query($Query);
+
+            if($QueryResults)
+            {
+                if($QueryResults->num_rows == 0)
+                {
+                    return $Results;
+                }
+
+                while($row = $QueryResults->fetch_assoc())
+                {
+                    if((bool)$row["is_deleted"] == false)
+                    {
+                        $Results[] = Group::fromArray($row);
+                    }
+                }
+            }
+            else
+            {
+                throw new DatabaseException($Query, $this->todo->getDatabase()->error);
+            }
+
+            return $Results;
+        }
     }
