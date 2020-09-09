@@ -68,16 +68,6 @@
          */
         public static function color($input, bool $throw_exception=false): bool
         {
-            if($input == null)
-            {
-                if($throw_exception)
-                {
-                    throw new InvalidColorException("The input cannot be null");
-                }
-
-                return false;
-            }
-
             switch((int)$input)
             {
                 case Color::None:

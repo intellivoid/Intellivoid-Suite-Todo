@@ -98,7 +98,7 @@
 
             if(isset($data["id"]))
             {
-                $GroupObject->ID = $data["id"];
+                $GroupObject->ID = (int)$data["id"];
             }
 
             if(isset($data["public_id"]))
@@ -108,7 +108,7 @@
 
             if(isset($data["account_id"]))
             {
-                $GroupObject->AccountID = $data["account_id"];
+                $GroupObject->AccountID = (int)$data["account_id"];
             }
 
             if(isset($data["title"]))
@@ -128,12 +128,12 @@
 
             if(isset($data["last_updated_timestamp"]))
             {
-                $GroupObject->LastUpdatedTimestamp = $data["last_updated_timestamp"];
+                $GroupObject->LastUpdatedTimestamp = (int)$data["last_updated_timestamp"];
             }
 
             if(isset($data["created_timestamp"]))
             {
-                $GroupObject->CreatedTimestamp = $data["created_timestamp"];
+                $GroupObject->CreatedTimestamp = (int)$data["created_timestamp"];
             }
 
             return $GroupObject;

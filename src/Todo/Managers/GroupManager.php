@@ -128,6 +128,7 @@
                 }
                 else
                 {
+                    $Row["title"] = urldecode($Row["title"]);
                     return(Group::fromArray($Row));
                 }
             }
@@ -156,7 +157,7 @@
             $this->getGroup(GroupSearchMethod::byId, $group->ID);
 
             $Query = QueryBuilder::update("groups", array(
-                "title" => $this->todo->getDatabase()->real_escape_string($group->Title),
+                "title" => $this->todo->getDatabase()->real_escape_string(urlencode($group->Title)),
                 "color" => (int)$group->Color,
                 "is_deleted" => (int)$group->IsDeleted,
                 "last_updated_timestamp" => (int)time()
@@ -205,6 +206,7 @@
 
                 while($row = $QueryResults->fetch_assoc())
                 {
+                    $row["title"] = urldecode($row["title"]);
                     $Results[] = Group::fromArray($row);
                 }
             }

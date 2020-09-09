@@ -46,7 +46,7 @@
 
             if(isset($data["is_deleted"]))
             {
-                $PropertiesObject->IsDeleted = $data["is_deleted"];
+                $PropertiesObject->IsDeleted = (bool)$data["is_deleted"];
             }
 
             if(isset($data["time_till_true_deleted"]))

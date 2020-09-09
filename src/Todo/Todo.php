@@ -28,11 +28,6 @@
         private $DatabaseConfiguration;
 
         /**
-         * @var mixed
-         */
-        private $ServerConfiguration;
-
-        /**
          * @var mysqli|null
          */
         private $database;
@@ -53,9 +48,8 @@
          */
         public function __construct()
         {
-            $this->acm = new acm(__DIR__, 'CoffeeHouse');
+            $this->acm = new acm(__DIR__, 'todo');
             $this->DatabaseConfiguration = $this->acm->getConfiguration('Database');
-            $this->ServerConfiguration = $this->acm->getConfiguration('CoffeeHouseServer');
             $this->database = null;
 
             $this->GroupManager = new GroupManager($this);

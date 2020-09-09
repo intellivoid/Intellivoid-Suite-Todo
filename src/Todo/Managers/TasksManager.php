@@ -77,12 +77,24 @@
                 $group_id = (int)$group_id;
             }
 
+            if($description !== null)
+            {
+                if(strlen($description) == 0)
+                {
+                    $description = null;
+                }
+                else
+                {
+                    $description = $this->todo->getDatabase()->real_escape_string(urlencode($description));
+                }
+            }
+
             $Query = QueryBuilder::insert_into("tasks", array(
                 "public_id" => $this->todo->getDatabase()->real_escape_string($public_id),
                 "account_id" => (int)$account_id,
                 "group_id" => $group_id,
-                "title" => $this->todo->getDatabase()->real_escape_string($title),
-                "description" => $this->todo->getDatabase()->real_escape_string($description),
+                "title" => $this->todo->getDatabase()->real_escape_string(urlencode($title)),
+                "description" => $description,
                 "labels" => $this->todo->getDatabase()->real_escape_string(ZiProto::encode($labels)),
                 "color" => (int)Color::None,
                 "is_completed" => (int)false,
@@ -160,6 +172,11 @@
                 {
                     $Row["labels"] = ZiProto::decode($Row["labels"]);
                     $Row["properties"] = ZiProto::decode($Row["properties"]);
+                    $Row["title"] = urldecode($Row["title"]);
+                    if($Row["description"] !== null)
+                    {
+                        $Row["description"] = urldecode($Row["description"]);
+                    }
                     return(Task::fromArray($Row));
                 }
             }
@@ -199,10 +216,22 @@
                 }
             }
 
-            $Query = QueryBuilder::select("tasks", array(
+            if($task->Description !== null)
+            {
+                if(strlen($task->Description) == 0)
+                {
+                    $task->Description = null;
+                }
+                else
+                {
+                    $task->Description = $this->todo->getDatabase()->real_escape_string(urlencode($task->Description));
+                }
+            }
+
+            $Query = QueryBuilder::update("tasks", array(
                 "group_id" => (int)$task->GroupID,
-                "title" => $this->todo->getDatabase()->real_escape_string($task->Title),
-                "description" => $this->todo->getDatabase()->real_escape_string($task->Description),
+                "title" => $this->todo->getDatabase()->real_escape_string(urlencode($task->Title)),
+                "description" => $task->Description,
                 "labels" => $this->todo->getDatabase()->real_escape_string(ZiProto::encode($validated_labels)),
                 "color" => (int)$task->Color,
                 "is_completed" => (int)$task->IsCompleted,
@@ -247,7 +276,7 @@
                 "properties",
                 "last_updated_timestamp",
                 "created_timestamp"
-            ), "account_id", (int)$account_id . "\' AND `is_deleted`=\'0");
+            ), "account_id", (int)$account_id . "' AND `is_deleted`='0");
             $QueryResults = $this->todo->getDatabase()->query($Query);
 
             if($QueryResults)
@@ -261,6 +290,11 @@
                 {
                     $row["labels"] = ZiProto::decode($row["labels"]);
                     $row["properties"] = ZiProto::decode($row["properties"]);
+                    $row["title"] = urldecode($row["title"]);
+                    if($row["description"] !== null)
+                    {
+                        $row["description"] = urldecode($row["description"]);
+                    }
                     $Results[] = Task::fromArray($row);
                 }
             }

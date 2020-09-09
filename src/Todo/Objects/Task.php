@@ -140,7 +140,7 @@
 
             if(isset($data["id"]))
             {
-                $TaskObject->ID = $data["id"];
+                $TaskObject->ID = (int)$data["id"];
             }
 
             if(isset($data["public_id"]))
@@ -150,12 +150,12 @@
 
             if(isset($data["account_id"]))
             {
-                $TaskObject->AccountID = $data["account_id"];
+                $TaskObject->AccountID = (int)$data["account_id"];
             }
 
             if(isset($data["group_id"]))
             {
-                $TaskObject->GroupID = $data["group_id"];
+                $TaskObject->GroupID = (int)$data["group_id"];
             }
 
             if(isset($data["title"]))
@@ -180,12 +180,12 @@
 
             if(isset($data["is_completed"]))
             {
-                $TaskObject->IsCompleted = $data["is_completed"];
+                $TaskObject->IsCompleted = (bool)$data["is_completed"];
             }
 
             if(isset($data["is_deleted"]))
             {
-                $TaskObject->IsDeleted = $data["is_deleted"];
+                $TaskObject->IsDeleted = (bool)$data["is_deleted"];
             }
 
             if(isset($data["properties"]))
@@ -195,12 +195,12 @@
 
             if(isset($data["last_updated_timestamp"]))
             {
-                $TaskObject->LastUpdatedTimestamp = $data["last_updated_timestamp"];
+                $TaskObject->LastUpdatedTimestamp = (int)$data["last_updated_timestamp"];
             }
 
             if(isset($data["created_timestamp"]))
             {
-                $TaskObject->CreatedTimestamp = $data["created_timestamp"];
+                $TaskObject->CreatedTimestamp = (int)$data["created_timestamp"];
             }
 
             return $TaskObject;
