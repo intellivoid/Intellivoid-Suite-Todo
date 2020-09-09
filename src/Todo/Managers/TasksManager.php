@@ -124,6 +124,7 @@
          * @throws InvalidSearchMethodException
          * @throws TaskNotFoundException
          * @noinspection PhpUnused
+         * @noinspection DuplicatedCode
          */
         public function getTask(string $search_method, string $value): Task
         {
@@ -255,12 +256,23 @@
          * Returns all tasks associated with a Account ID
          *
          * @param int $account_id
+         * @param int|null $group_id
          * @return Task[]
          * @throws DatabaseException
          * @noinspection PhpUnused
+         * @noinspection DuplicatedCode
          */
-        public function getTasks(int $account_id): array
+        public function getTasks(int $account_id, int $group_id=null): array
         {
+            $where = "account_id";
+            $where_value = (int)$account_id;
+
+            if($group_id !== null)
+            {
+                $where = "group_id";
+                $where_value = (int)$group_id;
+            }
+
             $Results = array();
             $Query = QueryBuilder::select("tasks", array(
                 "id",
@@ -276,7 +288,7 @@
                 "properties",
                 "last_updated_timestamp",
                 "created_timestamp"
-            ), "account_id", (int)$account_id . "' AND `is_deleted`='0");
+            ), $where, $where_value . "' AND `is_deleted`='0");
             $QueryResults = $this->todo->getDatabase()->query($Query);
 
             if($QueryResults)
@@ -288,14 +300,18 @@
 
                 while($row = $QueryResults->fetch_assoc())
                 {
-                    $row["labels"] = ZiProto::decode($row["labels"]);
-                    $row["properties"] = ZiProto::decode($row["properties"]);
-                    $row["title"] = urldecode($row["title"]);
-                    if($row["description"] !== null)
+                    if((int)$row["account_id"] !== (int)$account_id)
                     {
-                        $row["description"] = urldecode($row["description"]);
+                        $row["labels"] = ZiProto::decode($row["labels"]);
+                        $row["properties"] = ZiProto::decode($row["properties"]);
+                        $row["title"] = urldecode($row["title"]);
+                        if($row["description"] !== null)
+                        {
+                            $row["description"] = urldecode($row["description"]);
+                        }
+
+                        $Results[] = Task::fromArray($row);
                     }
-                    $Results[] = Task::fromArray($row);
                 }
             }
             else
