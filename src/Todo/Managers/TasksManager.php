@@ -300,7 +300,7 @@
 
                 while($row = $QueryResults->fetch_assoc())
                 {
-                    if((int)$row["account_id"] !== (int)$account_id)
+                    if((int)$row["account_id"] == (int)$account_id)
                     {
                         $row["labels"] = ZiProto::decode($row["labels"]);
                         $row["properties"] = ZiProto::decode($row["properties"]);
