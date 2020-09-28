@@ -56,7 +56,7 @@
             $CreatedTimestamp = (int)time();
             $PublicID = Hashing::groupPublicId($account_id, $title, $CreatedTimestamp);
 
-            $Query = QueryBuilder::insert_into("groups", array(
+            $Query = QueryBuilder::insert_into("todo_groups", array(
                 "public_id" => $this->todo->getDatabase()->real_escape_string($PublicID),
                 "account_id" => (int)$account_id,
                 "title" => $this->todo->getDatabase()->real_escape_string(urlencode($title)),
@@ -106,7 +106,7 @@
                     throw new InvalidSearchMethodException("The search method '" . $search_method . "' is inapplicable to this method");
             }
 
-            $Query = QueryBuilder::select("groups", array(
+            $Query = QueryBuilder::select("todo_groups", array(
                 "id",
                 "public_id",
                 "account_id",
@@ -156,7 +156,7 @@
             Validation::groupTitle($group->Title, true);
             $this->getGroup(GroupSearchMethod::byId, $group->ID);
 
-            $Query = QueryBuilder::update("groups", array(
+            $Query = QueryBuilder::update("todo_groups", array(
                 "title" => $this->todo->getDatabase()->real_escape_string(urlencode($group->Title)),
                 "color" => (int)$group->Color,
                 "is_deleted" => (int)$group->IsDeleted,
@@ -185,7 +185,7 @@
         public function getGroups(int $account_id): array
         {
             $Results = array();
-            $Query = QueryBuilder::select("groups", array(
+            $Query = QueryBuilder::select("todo_groups", array(
                 "id",
                 "public_id",
                 "account_id",

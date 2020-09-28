@@ -89,7 +89,7 @@
                 }
             }
 
-            $Query = QueryBuilder::insert_into("tasks", array(
+            $Query = QueryBuilder::insert_into("todo_tasks", array(
                 "public_id" => $this->todo->getDatabase()->real_escape_string($public_id),
                 "account_id" => (int)$account_id,
                 "group_id" => $group_id,
@@ -144,7 +144,7 @@
                     throw new InvalidSearchMethodException("The search method '" . $search_method . "' is inapplicable to this method");
             }
 
-            $Query = QueryBuilder::select("tasks", array(
+            $Query = QueryBuilder::select("todo_tasks", array(
                 "id",
                 "public_id",
                 "account_id",
@@ -229,7 +229,7 @@
                 }
             }
 
-            $Query = QueryBuilder::update("tasks", array(
+            $Query = QueryBuilder::update("todo_tasks", array(
                 "group_id" => (int)$task->GroupID,
                 "title" => $this->todo->getDatabase()->real_escape_string(urlencode($task->Title)),
                 "description" => $task->Description,
@@ -274,7 +274,7 @@
             }
 
             $Results = array();
-            $Query = QueryBuilder::select("tasks", array(
+            $Query = QueryBuilder::select("todo_tasks", array(
                 "id",
                 "public_id",
                 "account_id",
