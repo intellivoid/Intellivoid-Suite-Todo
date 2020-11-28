@@ -9,4 +9,4 @@ update:
 	ppm --generate-package="src/Todo"
 
 install:
-	ppm --no-prompt --fix-conflict --install="build/net.intellivoid.todo.ppm"
+	ppm --no-prompt --fix-conflict --install="build/net.intellivoid.todo.ppm" --branch="production"
